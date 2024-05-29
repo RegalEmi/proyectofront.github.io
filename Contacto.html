@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Educativa Interactiva ABC</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-image"></div>
+    <header>
+        <h1>Plataforma Educativa Interactiva ABC</h1>
+        <nav>
+            <ul>
+                <li><a href="Index.html">Inicio</a></li>
+                <li><a href="Cursos.html">Cursos</a></li>
+                <li><a href="Actividades.html">Actividades</a></li>
+                <li><a href="AcercaDeNosotros.html">Acerca de Nosotros</a></li>
+                <li><a href="Contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container widget">
+        <div class="discussionForm">  
+            <form id="Formulario" method="post" enctype="multipart/form-data">
+                <fieldset class="clearfix">
+                    <div class="input">
+                        <label for="nombre">Nombre *</label>
+                        <input id="nombre" type="text" name="form_text" required maxlength="255" placeholder="Escribe tu nombre">
+                    </div>
+                    <div class="input">
+                        <label for="email">E-mail *</label>
+                        <input id="email" type="email" name="form_email" required maxlength="255" placeholder="nombre@ejemplo.com">
+                    </div>
+                    <div class="input">
+                        <label for="asunto">Asunto *</label>
+                        <input id="asunto" type="text" name="form_text1" required maxlength="255" placeholder="Escribe el asunto">
+                    </div>
+                    <div class="input">
+                        <label for="mensaje">Mensaje *</label>
+                        <textarea id="mensaje" rows="10" cols="40" name="form_textarea" required placeholder="Escribe tu mensaje"></textarea>
+                    </div>
+
+                    <div class="input">
+                        <label>Tipo de Archivo *</label>
+                        <select id="tipoArchivo" name="tipo_archivo" required>
+                            <option value="imagen">Imagen</option>
+                            <option value="documento">Documento</option>
+                        </select>
+                    </div>
+
+                    <div class="input" id="inputImagen">
+                        <label>Imagen *</label>
+                        <!--<label for="imagen" class="custom-file-upload">Seleccionar imagen</label>-->
+                        <input type="file" id="imagen" name="form_imagen" accept="image/*" required>
+                        <img id="previewImagen" src="#" alt="Vista previa de la imagen" style="display: none; max-width: 100%; max-height: 200px;">
+                    </div>
+
+                    <div class="input" id="inputDocumento" style="display: none;">
+                        <label>Documento *</label>
+                        <label for="documento" class="custom-file-upload">Seleccionar documento</label>
+                        <input type="file" id="documento" name="form_documento" accept=".pdf,.doc,.docx" required>
+                    </div>
+
+                    <button type="button" id="sendBtn" class="btn">Enviar</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('tipoArchivo').addEventListener('change', function(event) {
+            var tipoSeleccionado = event.target.value;
+            var inputImagen = document.getElementById('inputImagen');
+            var inputDocumento = document.getElementById('inputDocumento');
+
+            if (tipoSeleccionado === 'imagen') {
+                inputImagen.style.display = 'block';
+                inputDocumento.style.display = 'none';
+            } else if (tipoSeleccionado === 'documento') {
+                inputDocumento.style.display = 'block';
+                inputImagen.style.display = 'none';
+            }
+        });
+
+        document.getElementById('imagen').addEventListener('change', function(event) {
+            var imagenInput = event.target;
+            var imagen = imagenInput.files[0];
+            var imagenType = imagen.type.split('/')[0];
+
+            if (imagenType !== 'image') {
+                alert('Por favor, selecciona un archivo de imagen.');
+                imagenInput.value = '';
+                return;
+            }
+
+            var previewImagen = document.getElementById('previewImagen');
+            previewImagen.style.display = 'block';
+
+            var lector = new FileReader();
+            lector.onload = function(e) {
+                previewImagen.src = e.target.result;
+            };
+            lector.readAsDataURL(imagen);
+        });
+
+        document.getElementById('documento').addEventListener('change', function(event) {
+            var documentoInput = event.target;
+            var documento = documentoInput.files[0];
+            var documentoType = documento.type.split('/')[0];
+
+            if (documentoType !== 'application/pdf' && documentoType !== 'application/msword' && documentoType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                alert('Por favor, selecciona un archivo de documento válido (PDF, DOC o DOCX).');
+                documentoInput.value = '';
+                return;
+            }
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            var nombre = document.getElementById('nombre').value;
+            var email = document.getElementById('email').value;
+            var asunto = document.getElementById('asunto').value;
+            var mensaje = document.getElementById('mensaje').value;
+            var tipoArchivo = document.getElementById('tipoArchivo').value;
+
+            var body = `Nombre: ${nombre}\nE-mail: ${email}\nAsunto: ${asunto}\nMensaje: ${mensaje}\nTipo de Archivo: ${tipoArchivo}`;
+            var mailtoLink = `mailto:marchangomer@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
+
+            window.location.href = mailtoLink;
+        });
+    </script>
+
+    <footer>
+        <p>Derechos de autor © 2024 Plataforma Educativa Interactiva. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
